@@ -1,37 +1,20 @@
+
 (function () {
     function DisplayHome(){
-        let randomButton = document.getElementById("randomButton")
-        randomButton.addEventListener("click", function(){
-            location.href = './projects.html'
+
+
+        // Most amount of memory heap 
+        $("#randomButton").on("click", function() {
+            location.href = "contact.html"
         })
-        
-
-        let mainContent = document.getElementsByTagName("main")[0]
-        mainContent.setAttribute("class", "container")
-        
-        // another way to access body
-        documentBody = document.body
-
-        let mainParagraph = document.createElement("p")
-        mainParagraph.setAttribute("id", "MainParagraph")
-        mainParagraph.setAttribute("class", "mt-3 container")
-
 
 
         let firstString = "This is a "
-        let secondString = `${ firstString } main paragraph that we added through javascript`
-        mainParagraph.textContent = secondString
+        let secondString = `${ firstString } main paragraph that we added through javascript and this is also on GitHub Pages`
 
-        /**
-         * textContent - changes text node
-         * innerHTML - overwrites anything in the innerHTML of that element
-         */
+        $("main").addClass("container").append(`<p id="MainParagraph" class="mt-3 container">${ secondString }</p>`)
 
-        // add after(append)
-        mainContent.appendChild(mainParagraph) 
 
-        // let terry = new Contact("Terry Sagas", "9053912867", "terrysagas@dcmail.ca")
-        // console.log(terry.toString())
 
     }
     function DisplayProjects(){
@@ -83,11 +66,11 @@
                     <td class="text-center">${ contact.Name }</td>
                     <td class="text-center">${ contact.ContactNumber }</td>
                     <td class="text-center">${ contact.EmailAddress }</td>
-                    <td class="text-center"></td>
-                    <td class="text-center"></td>
+                    <td class="text-center"><button value="" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
+                <td class="text-center"><button value="" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
                 </tr>
                 `
-
+                
                 index++
             }
 
