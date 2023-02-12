@@ -1,35 +1,27 @@
-
 (function () {
-    function DisplayHome(){
 
-
-        // Most amount of memory heap 
-        $("#randomButton").on("click", function() {
-            location.href = "contact.html"
+    function DisplayHome() {
+        $("#RandomButton").on("click", function() {
+            location.href = 'contact.html'
         })
 
-
+        // concatenation - '1' + '2' + '3'
+        // interpolation - `${var_1}`
         let firstString = "This is a "
         let secondString = `${ firstString } main paragraph that we added through javascript and this is also on GitHub Pages`
 
         $("main").addClass("container").append(`<p id="MainParagraph" class="mt-3 container">${ secondString }</p>`)
-
-
-
     }
-    function DisplayProjects(){
-        console.log("Projects page")
+
+    function DisplayProjects() {
+        console.log("Projects Page")
     }
+
     function DisplayContacts() {
         console.log("Contact Us Page")
 
         let submitButton = document.getElementById("submitButton")
         let subscribeCheckbox = document.getElementById("subscribeCheckbox")
-
-        // localStorage Example
-        // localStorage.setItem("Random Variable", "random variable for testing and demonstration")
-        // console.log(localStorage.getItem("Random Variable"))
-        // localStorage.removeItem("Random Variable")
 
         submitButton.addEventListener("click", function() {
             // event.preventDefault()
@@ -67,7 +59,7 @@
                     <td class="text-center">${ contact.ContactNumber }</td>
                     <td class="text-center">${ contact.EmailAddress }</td>
                     <td class="text-center"><button value="" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
-                <td class="text-center"><button value="" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
+                    <td class="text-center"><button value="${key}" id="delButton" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
                 </tr>
                 `
                 
@@ -75,7 +67,28 @@
             }
 
             contactList.innerHTML = data
+            var button = document.getElementById("delButton")
+            // button.addEventListener("click", function() {
+            //     if (confirm("are you sure")){
+            //         localStorage.removeItem($(this).val())
+            //     }
+            $("button.delete").on("click", function()
+            {
+                if(confirm("Are you sure?"))
+                {
+                    localStorage.removeItem($(this).val())
+                }
+                location.href = "contact-list.html";
+            
+              
+    
+                
+            })
         }
+    }
+    function deleteContact() {
+
+
     }
 
     function DisplayReferences() {
@@ -97,6 +110,7 @@
                 break
             case "Contact List - WEBD6201 Demo":
                 DisplayContactList()
+                deleteContact()
                 break
             case "References - WEBD6201 Demo":
                 DisplayReferences()
