@@ -27,13 +27,20 @@
             // event.preventDefault()
             if (subscribeCheckbox.checked) {
                 // If user subscribes, store the contact in localStorage
-                let contact = new Contact(fullName.value, contactNumber.value, emailAddress.value)
-                if (contact.serialize()) {
-                    let key = contact.Name.substring(0, 1) + Date.now()
-                    localStorage.setItem(key, contact.serialize())
-                }
+                AddContact(fullName.value, contactNumber.value, emailAddress.value)
+
+                // redirect
+                location.href = "contact-list.html"
             }
         })
+    }
+
+    function AddContact(fullName, contactNumber, emailAddress){
+        let contact = new Contact(fullName, contactNumber, emailAddress)
+        if (contact.serialize()) {
+            let key = contact.Name.substring(0, 1) + Date.now()
+            localStorage.setItem(key, contact.serialize())
+        }
     }
 
     function DisplayContactList() {
@@ -58,7 +65,7 @@
                     <td class="text-center">${ contact.Name }</td>
                     <td class="text-center">${ contact.ContactNumber }</td>
                     <td class="text-center">${ contact.EmailAddress }</td>
-                    <td class="text-center"><button value="" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
+                    <td class="text-center"><button value="${key}" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
                     <td class="text-center"><button value="${key}" id="delButton" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
                 </tr>
                 `
@@ -67,6 +74,9 @@
             }
 
             contactList.innerHTML = data
+
+
+
             $("button.delete").on("click", function()
             {
                 if(confirm("Are you sure?"))
@@ -74,17 +84,63 @@
                     localStorage.removeItem($(this).val())
                 }
                 location.href = "contact-list.html";
-            
-              
-    
-                
+            })
+            $("button.edit").on("click", function(){
+                location.href = 'edit.html#' + $(this).val()
             })
         }
+        $("#addButton").on("click", () => {
+            location.href = "edit.html#Add"
+        })
     }
-    function deleteContact() {
 
+    function DisplayEditPage(){
+        let page = location.hash.substring(1)
 
+        switch(page){
+            case "Add":
+                {
+                    $("#welcome").text("WEBD6201 Demo Add Contact")
+
+                    $("#editButton").html('<i class="fas fa-plus-circle fa-lg"></i> Add')
+
+                    $("#editButton").on("click", (event) => {
+                        event.preventDefault()
+
+                        AddContact(fullName.value, contactNumber.value, emailAddress.value)
+                    })   
+                }
+                
+                location.href = "contact-list.html"
+                break
+            default:
+                {
+                    // Get contact info from local
+                    let contact = new Contact()
+                    contact.deserialize(localStorage.getItem(page))
+
+                    // Display contact info in edit
+                    $("#fullName").val(contact.Name)
+                    $("#contactNumber").val(contact.ContactNumber)
+                    $("#emailAddress").val(contact.EmailAddress)
+
+                    // When edit button is pressed
+                    $("#editButton").on("click", (event) =>{
+                        event.preventDefault()
+                        contact.Name = $("#fullName").val()
+                        contact.ContactNumber = $("#contactNumber").val()
+                        contact.EmailAddress = $("#emailAddress").val()
+
+                        localStorage.setItem(page, contact.serialize())
+
+                        location.href = "contact-list.html"
+                        
+                    })
+                }
+                break
+        }
     }
+    
 
     function DisplayReferences() {
         console.log("References Page")
@@ -105,11 +161,20 @@
                 break
             case "Contact List - WEBD6201 Demo":
                 DisplayContactList()
-                deleteContact()
+                break
+            case "Edit - WEBD6201 Demo":
+                DisplayEditPage()
                 break
             case "References - WEBD6201 Demo":
                 DisplayReferences()
                 break
+
+
+
+
+            
+
+
         }
     }
 
