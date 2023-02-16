@@ -17,30 +17,31 @@
         console.log("Projects Page")
     }
 
+    function AddContact(fullName, contactNumber, emailAddress) {
+        let contact = new core.Contact(fullName, contactNumber, emailAddress)
+        if (contact.serialize()) {
+            let key = contact.Name.substring(0, 1) + Date.now()
+            localStorage.setItem(key, contact.serialize())
+        }
+    }
+
     function DisplayContacts() {
         console.log("Contact Us Page")
 
         let submitButton = document.getElementById("submitButton")
         let subscribeCheckbox = document.getElementById("subscribeCheckbox")
 
+        // localStorage Example
+        // localStorage.setItem("Random Variable", "random variable for testing and demonstration")
+        // console.log(localStorage.getItem("Random Variable"))
+        // localStorage.removeItem("Random Variable")
+
         submitButton.addEventListener("click", function() {
-            // event.preventDefault()
             if (subscribeCheckbox.checked) {
                 // If user subscribes, store the contact in localStorage
                 AddContact(fullName.value, contactNumber.value, emailAddress.value)
-
-                // redirect
-                location.href = "contact-list.html"
             }
         })
-    }
-
-    function AddContact(fullName, contactNumber, emailAddress){
-        let contact = new Contact(fullName, contactNumber, emailAddress)
-        if (contact.serialize()) {
-            let key = contact.Name.substring(0, 1) + Date.now()
-            localStorage.setItem(key, contact.serialize())
-        }
     }
 
     function DisplayContactList() {
@@ -55,7 +56,7 @@
             // for every key in the keys collection
             for (const key of keys) {
                 let contactData = localStorage.getItem(key) // Get localStorage data value related to the key
-                let contact = new Contact()
+                let contact = new core.Contact()
                 
                 contact.deserialize(contactData)
 
@@ -65,8 +66,8 @@
                     <td class="text-center">${ contact.Name }</td>
                     <td class="text-center">${ contact.ContactNumber }</td>
                     <td class="text-center">${ contact.EmailAddress }</td>
-                    <td class="text-center"><button value="${key}" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
-                    <td class="text-center"><button value="${key}" id="delButton" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
+                    <td class="text-center"><button value="${ key }" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i>&nbsp; Edit</button></td>
+                    <td class="text-center"><button value="${ key }" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i>&nbsp; Delete</button></td>
                 </tr>
                 `
                 
@@ -75,72 +76,74 @@
 
             contactList.innerHTML = data
 
-
-
-            $("button.delete").on("click", function()
-            {
-                if(confirm("Are you sure?"))
-                {
+            $("button.delete").on("click", function() {
+                if (confirm("Are you sure you want to delete this?"))
                     localStorage.removeItem($(this).val())
-                }
-                location.href = "contact-list.html";
+
+                location.href = 'contact-list.html'
             })
-            $("button.edit").on("click", function(){
+
+            $("button.edit").on("click", function() {
                 location.href = 'edit.html#' + $(this).val()
             })
         }
+
         $("#addButton").on("click", () => {
-            location.href = "edit.html#Add"
+            location.href = 'edit.html#Add'
         })
     }
 
-    function DisplayEditPage(){
+    function DisplayEditPage() {
         let page = location.hash.substring(1)
 
-        switch(page){
+        switch(page) {
             case "Add":
                 {
                     $("#welcome").text("WEBD6201 Demo Add Contact")
 
-                    $("#editButton").html('<i class="fas fa-plus-circle fa-lg"></i> Add')
+                    $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`)
 
                     $("#editButton").on("click", (event) => {
                         event.preventDefault()
 
+                        // get form information (name, contact number, email address)
                         AddContact(fullName.value, contactNumber.value, emailAddress.value)
-                    })   
+
+                        // redirect to contact-list
+                        location.href = 'contact-list.html'
+                    })
                 }
-                
-                location.href = "contact-list.html"
                 break
             default:
                 {
-                    // Get contact info from local
-                    let contact = new Contact()
+                    // get contact info from localStorage
+                    let contact = new core.Contact()
                     contact.deserialize(localStorage.getItem(page))
 
-                    // Display contact info in edit
+                    // display contact info in edit form
                     $("#fullName").val(contact.Name)
                     $("#contactNumber").val(contact.ContactNumber)
                     $("#emailAddress").val(contact.EmailAddress)
 
-                    // When edit button is pressed
-                    $("#editButton").on("click", (event) =>{
+                    // when edit button is pressed, update the contact
+                    $("#editButton").on("click", (event) => {
                         event.preventDefault()
+
+                        // get all changes from the form
                         contact.Name = $("#fullName").val()
                         contact.ContactNumber = $("#contactNumber").val()
                         contact.EmailAddress = $("#emailAddress").val()
 
+                        // replace the changes in localStorage
                         localStorage.setItem(page, contact.serialize())
 
-                        location.href = "contact-list.html"
-                        
+                        // go back to contact-list.html
+                        location.href = 'contact-list.html'
                     })
                 }
                 break
         }
     }
-    
 
     function DisplayReferences() {
         console.log("References Page")
@@ -162,19 +165,12 @@
             case "Contact List - WEBD6201 Demo":
                 DisplayContactList()
                 break
-            case "Edit - WEBD6201 Demo":
-                DisplayEditPage()
-                break
             case "References - WEBD6201 Demo":
                 DisplayReferences()
                 break
-
-
-
-
-            
-
-
+            case "Edit - WEBD6201 Demo":
+                DisplayEditPage()
+                break
         }
     }
 
