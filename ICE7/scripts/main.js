@@ -25,8 +25,33 @@
         }
     }
 
+    function TestFullName(){
+        let messageArea = $('#messageArea').hide()
+
+        let fullNamePattern = /^([A-Z][a-z]{1,25})((\s|,|-)([A-Z][a-z]{1,25}))*(\s|-|,)*$/g
+
+        $('#fullName').on("blur", function(){
+            let fullNameText = $(this).val()
+
+            if (!fullNamePattern.test(fullNameText)){
+                $(this).trigger("focus")
+                $(this).trigger("select")
+
+                messageArea.addClass("alert alert-danger")
+                messageArea.text("please enter a valid full name which means a capitalized first name and capitalized last name")
+                messageArea.show()
+            } else {
+                messageArea.removeAttr("class")
+                messageArea.hide()
+
+            }
+        })
+    }
+
     function DisplayContacts() {
         console.log("Contact Us Page")
+
+        TestFullName()
 
         let submitButton = document.getElementById("submitButton")
         let subscribeCheckbox = document.getElementById("subscribeCheckbox")
