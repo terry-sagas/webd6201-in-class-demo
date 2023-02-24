@@ -1,4 +1,18 @@
 (function () {
+    function DisplayNavBar(){
+        // ajax
+        let XHR = new XMLHttpRequest()
+
+
+        XHR.addEventListener("readystatechange", () => {
+            if (XHR.readyState === 4 && XHR.status === 200){
+                $('#navagationBar').html(XHR.responseText)
+            }
+        })
+        XHR.open("GET", "./static/header.html")
+
+        XHR.send()
+    }
 
     function DisplayHome() {
         $("#RandomButton").on("click", function() {
@@ -11,6 +25,8 @@
         let secondString = `${ firstString } main paragraph that we added through javascript and this is also on GitHub Pages`
 
         $("main").addClass("container").append(`<p id="MainParagraph" class="mt-3 container">${ secondString }</p>`)
+        
+
     }
 
     function DisplayProjects() {
@@ -25,20 +41,20 @@
         }
     }
 
-    function TestFullName(){
+
+    function ValidateInput(inputFieldID, regularExpression, exception){
         let messageArea = $('#messageArea').hide()
 
-        let fullNamePattern = /^([A-Z][a-z]{1,25})((\s|,|-)([A-Z][a-z]{1,25}))*(\s|-|,)*$/g
+        
+        $('#' + inputFieldID).on("blur", function(){
+            let inputText = $(this).val()
 
-        $('#fullName').on("blur", function(){
-            let fullNameText = $(this).val()
-
-            if (!fullNamePattern.test(fullNameText)){
+            if (!regularExpression.test(inputText)){
                 $(this).trigger("focus")
                 $(this).trigger("select")
 
                 messageArea.addClass("alert alert-danger")
-                messageArea.text("please enter a valid full name which means a capitalized first name and capitalized last name")
+                messageArea.text(exception)
                 messageArea.show()
             } else {
                 messageArea.removeAttr("class")
@@ -48,14 +64,24 @@
         })
     }
 
+    function ContactFormValidate(){
+        let fullNamePattern = /^([A-Z][a-z]{1,25})((\s|,|-)([A-Z][a-z]{1,25}))*(\s|-|,)*$/g
+        let emailAddressPattern = /^[\w-\.]+@([\w-]+\.)+[\w-][\D]{1,10}$/g
+        var phoneNumberPattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+
+        ValidateInput("fullName", fullNamePattern, "please enter a valid full name which means a capitalized first name and capitalized last name")
+        ValidateInput("emailAddress", emailAddressPattern, "please enter a valid email: xxx@xxx.xxx")
+        ValidateInput("contactNumber", phoneNumberPattern, "please enter a valid phone number")
+
+    }
+
     function DisplayContacts() {
         console.log("Contact Us Page")
 
-        TestFullName()
+        ContactFormValidate()
 
         let submitButton = document.getElementById("submitButton")
         let subscribeCheckbox = document.getElementById("subscribeCheckbox")
-
         // localStorage Example
         // localStorage.setItem("Random Variable", "random variable for testing and demonstration")
         // console.log(localStorage.getItem("Random Variable"))
@@ -119,6 +145,7 @@
     }
 
     function DisplayEditPage() {
+        ContactFormValidate()
         let page = location.hash.substring(1)
 
         switch(page) {
@@ -170,8 +197,14 @@
         }
     }
 
+    function DisplayLoginPage() {
+        console.log("Login Page")
+    }
     function DisplayReferences() {
         console.log("References Page")
+    }
+    function DisplayRegistrationPage() {
+        console.log("Registration Page")
     }
     
     function Start() {
@@ -181,12 +214,14 @@
         switch (document.title) {
             case "Home - WEBD6201 Demo":
                 DisplayHome()
+                DisplayNavBar()
                 break
             case "Projects - WEBD6201 Demo":
                 DisplayProjects()
                 break
             case "Contact Us - WEBD6201 Demo":
                 DisplayContacts()
+                DisplayNavBar()
                 break
             case "Contact List - WEBD6201 Demo":
                 DisplayContactList()
@@ -196,6 +231,12 @@
                 break
             case "Edit - WEBD6201 Demo":
                 DisplayEditPage()
+                break
+            case "Login - WEBD6201 Demo":
+                DisplayLoginPage()
+                break
+            case "Register - WEBD6201 Demo":
+                DisplayReferences()
                 break
         }
     }
