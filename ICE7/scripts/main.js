@@ -69,6 +69,8 @@
         let emailAddressPattern = /^[\w-\.]+@([\w-]+\.)+[\w-][\D]{1,10}$/g
         var phoneNumberPattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 
+
+
         ValidateInput("fullName", fullNamePattern, "please enter a valid full name which means a capitalized first name and capitalized last name")
         ValidateInput("emailAddress", emailAddressPattern, "please enter a valid email: xxx@xxx.xxx")
         ValidateInput("contactNumber", phoneNumberPattern, "please enter a valid phone number")
