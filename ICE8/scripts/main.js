@@ -1,17 +1,26 @@
-(function () {
-    function DisplayNavBar(){
+(function (){
+    function AjaxRequest(method, url, callback){
         // ajax
         let XHR = new XMLHttpRequest()
 
 
         XHR.addEventListener("readystatechange", () => {
             if (XHR.readyState === 4 && XHR.status === 200){
-                $('#navagationBar').html(XHR.responseText)
+                if(typeof callback === 'function'){
+                    callback(XHR.responseText)
+                } else{
+                    console.error("ERROR: callback is not a function");
+                }
             }
         })
-        XHR.open("GET", "./static/header.html")
+        XHR.open(method, url)
 
         XHR.send()
+    }
+    
+    function LoadHeader(html_data){
+        $('#navagationBar').html(html_data)
+        $(`li>a:contains(${document.title})`).addClass('active')
     }
 
     function DisplayHome() {
@@ -25,6 +34,7 @@
         let secondString = `${ firstString } main paragraph that we added through javascript and this is also on GitHub Pages`
 
         $("main").addClass("container").append(`<p id="MainParagraph" class="mt-3 container">${ secondString }</p>`)
+        
         
 
     }
@@ -211,34 +221,34 @@
     
     function Start() {
         console.log("App Started Successfully!")
+        AjaxRequest("GET", "./static/header.html", LoadHeader)
         
 
         switch (document.title) {
-            case "Home - WEBD6201 Demo":
+            case "Home":
                 DisplayHome()
-                DisplayNavBar()
                 break
-            case "Projects - WEBD6201 Demo":
+            case "Projects":
                 DisplayProjects()
                 break
-            case "Contact Us - WEBD6201 Demo":
+            case "Contact Us":
                 DisplayContacts()
                 DisplayNavBar()
                 break
-            case "Contact List - WEBD6201 Demo":
+            case "Contact List":
                 DisplayContactList()
                 break
-            case "References - WEBD6201 Demo":
+            case "References":
                 DisplayReferences()
                 break
-            case "Edit - WEBD6201 Demo":
+            case "Edit":
                 DisplayEditPage()
                 break
-            case "Login - WEBD6201 Demo":
+            case "Login":
                 DisplayLoginPage()
                 break
-            case "Register - WEBD6201 Demo":
-                DisplayReferences()
+            case "Register":
+                DisplayRegistrationPage()
                 break
         }
     }
