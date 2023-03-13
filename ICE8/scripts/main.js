@@ -21,6 +21,7 @@
     function LoadHeader(html_data){
         $('#navagationBar').html(html_data)
         $(`li>a:contains(${document.title})`).addClass('active')
+        CheckLogin()
     }
 
     function DisplayHome() {
@@ -89,7 +90,9 @@
 
     function DisplayContacts() {
         console.log("Contact Us Page")
-
+        if (sessionStorage.getItem("user")){
+            $("#showContactDiv").append(<a href="./contact-list.html" class="btn btn-primary btn-lg"><i class="fas fa-users fa-lg"></i> Show Contact List</a>)
+        }
         ContactFormValidate()
 
         let submitButton = document.getElementById("submitButton")
@@ -108,6 +111,7 @@
     }
 
     function DisplayContactList() {
+        AuthGuard()
         if (localStorage.length > 0) {
             let contactList = document.getElementById("contactList") // Our contact list in the table of the contact-list page
 
@@ -211,7 +215,72 @@
 
     function DisplayLoginPage() {
         console.log("Login Page")
+
+        let messageArea = $('#messageArea')
+        messageArea.hide()
+
+        $('#loginButton').on('click', function() {
+            let success = false
+
+            // create an empty user object
+            let newUser = new core.User()
+
+            // use JQuery to load users.json file and read over it
+            $.get('./Data/users.json', function(data) {
+                // iterate over every user in the users.json file... for loop
+                for (const user of data.users) {
+                    // check if the username and password match the user data
+                    // passed in from users.json
+                    if (username.value == user.Username && password.value == user.Password) {
+                        newUser.fromJSON(user)
+                        success = true
+                        break
+                    }
+                }
+
+                // if username and password matched (success = true) -> perform the login sequence
+                if (success) {
+                    // add user to sessionStorage
+                    sessionStorage.setItem('user', newUser.serialize())
+
+                    // hide any error messages
+                    messageArea.removeAttr('class').hide()
+
+                    // redirect the user to the secure area of our website - contact-list.html
+                    location.href = 'contact-list.html'
+                } else {
+                    // display the error message
+                    $('#username').trigger('focus').trigger('select')
+                    messageArea.addClass('alert alert-danger').text('Error: Invalid Login Credentials.. Username/Password Mismatch').show()
+                }
+            })
+
+            
+        })
     }
+    
+    function CheckLogin(){
+        if(sessionStorage.getItem("user")){
+            $('#login').html(
+                `<a id="logout" class="nav-link" href="./login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>`
+            )
+            $('#logout').on('click', function(){
+                sessionStorage.clear()
+
+                Location.href = 'login.html'
+            })
+        }
+    }
+
+    function AuthGuard(){
+        if (!sessionStorage.getItem("user")){
+            location.href = 'login.html'
+        }
+    }
+
+        
+        
+        
     function DisplayReferences() {
         console.log("References Page")
     }

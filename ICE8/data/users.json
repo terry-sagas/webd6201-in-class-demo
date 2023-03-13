@@ -18,6 +18,12 @@
             "EmailAddress": "june.smith@durhamcollege.ca",
             "Username": "junesmith",
             "Password": "123456"
+        },
+        {
+            "DisplayName": "Terry Sagas",
+            "EmailAddress": "terry.sagas@dcmail.ca",
+            "Username": "terrysagas",
+            "Password": "123456"
         }
     ]
 }
