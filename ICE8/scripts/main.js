@@ -90,9 +90,10 @@
 
     function DisplayContacts() {
         console.log("Contact Us Page")
-        if (sessionStorage.getItem("user")){
-            $("#showContactDiv").append(<a href="./contact-list.html" class="btn btn-primary btn-lg"><i class="fas fa-users fa-lg"></i> Show Contact List</a>)
-        }
+        // Ask prof about this
+        // if (sessionStorage.getItem("user")){
+        //     $("#showContactDiv").append(<a href="./contact-list.html" class="btn btn-primary btn-lg"><i class="fas fa-users fa-lg"></i> Show Contact List</a>)
+        // }
         ContactFormValidate()
 
         let submitButton = document.getElementById("submitButton")
