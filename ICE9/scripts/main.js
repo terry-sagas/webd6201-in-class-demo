@@ -19,14 +19,42 @@
     }
     
     function LoadHeader(html_data){
-        $('#navagationBar').html(html_data)
-        $(`li>a:contains(${document.title})`).addClass('active')
+        $.get('./Views/components/header.html', function(html_data){
+            $('#navagationBar').html(html_data)
+
+            document.title = router.ActiveLink.substring(0, 2).toUpperCase() + router.ActiveLink.substring(2)
+            $(`li>a:contains(${document.title})`).addClass('active')
+        })
+
         CheckLogin()
+    }
+    /**
+     * this function loads content
+     * @returns {void}
+     */
+    function LoadContent(){
+        let pageName = router.ActiveLink
+        $.get(`./Views/content/${pageName}.html`, function(html_data){
+            $('main').html(html_data)
+
+            ActiveLinkCallBack()
+        })
+
+    }
+
+    /**
+     * this function loads footer
+     * @returns {void}
+     */
+    function LoadFooter(){
+        $.get('./Views/components/footer.html', function(html_data){
+            $('footer').html(html_data)
+        })
     }
 
     function DisplayHome() {
         $("#RandomButton").on("click", function() {
-            location.href = 'contact.html'
+            location.href = '/contact'
         })
 
         // concatenation - '1' + '2' + '3'
@@ -90,9 +118,9 @@
 
     function DisplayContacts() {
         console.log("Contact Us Page")
-        // Ask prof about this
+
         if (sessionStorage.getItem("user")){
-            $("#showContactDiv").append(`<a href="./contact-list.html" class="btn btn-primary btn-lg"><i class="fas fa-users fa-lg"></i> Show Contact List</a>`)
+            $("#showContactDiv").append(`<a href="/contact-list" class="btn btn-primary btn-lg"><i class="fas fa-users fa-lg"></i> Show Contact List</a>`)
         }
         ContactFormValidate()
 
@@ -148,16 +176,16 @@
                 if (confirm("Are you sure you want to delete this?"))
                     localStorage.removeItem($(this).val())
 
-                location.href = 'contact-list.html'
+                location.href = '/contact-list'
             })
 
             $("button.edit").on("click", function() {
-                location.href = 'edit.html#' + $(this).val()
+                location.href = '/edit.#' + $(this).val()
             })
         }
 
         $("#addButton").on("click", () => {
-            location.href = 'edit.html#Add'
+            location.href = '/edit#Add'
         })
     }
 
@@ -179,7 +207,7 @@
                         AddContact(fullName.value, contactNumber.value, emailAddress.value)
 
                         // redirect to contact-list
-                        location.href = 'contact-list.html'
+                        location.href = '/contact-list'
                     })
                 }
                 break
@@ -207,7 +235,7 @@
                         localStorage.setItem(page, contact.serialize())
 
                         // go back to contact-list.html
-                        location.href = 'contact-list.html'
+                        location.href = '/contact-list'
                     })
                 }
                 break
@@ -248,34 +276,40 @@
                     messageArea.removeAttr('class').hide()
 
                     // redirect the user to the secure area of our website - contact-list.html
-                    location.href = 'contact-list.html'
+                    location.href = '/contact-list'
                 } else {
                     // display the error message
                     $('#username').trigger('focus').trigger('select')
                     messageArea.addClass('alert alert-danger').text('Error: Invalid Login Credentials.. Username/Password Mismatch').show()
                 }
             })
-
             
+        })
+        $('#cancelButton').on('click', function() {
+            // clear the form
+            document.form[0].reset()
+
+            // return to home page
+            location.href = '/home'
         })
     }
     
     function CheckLogin(){
         if(sessionStorage.getItem("user")){
             $('#login').html(
-                `<a id="logout" class="nav-link" href="./login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>`
+                `<a id="logout" class="nav-link" href="./login"><i class="fas fa-sign-out-alt"></i> Logout</a>`
             )
             $('#logout').on('click', function(){
                 sessionStorage.clear()
 
-                Location.href = 'login.html'
+                Location.href = '/login'
             })
         }
     }
 
     function AuthGuard(){
         if (!sessionStorage.getItem("user")){
-            location.href = 'login.html'
+            location.href = '/login'
         }
     }
 
@@ -285,16 +319,44 @@
     function DisplayReferences() {
         console.log("References Page")
     }
-    function DisplayRegistrationPage() {
+    function DisplayRegisterPage() {
         console.log("Registration Page")
+    }
+
+    function Display404Page(){
+        console.log("404 Page");
+    }
+
+    /**
+     * @returns {function}
+     */
+    function ActiveLinkCallBack(){
+        console.log(`ActiveLinkCallBack - ${router.ActiveLink}`)
+        switch(router.ActiveLink){
+            case "home": return DisplayHome()
+            case "projects": return DisplayProjects()
+            case "contact": return DisplayContacts()
+            case "contact-list": return DisplayContactList()
+            case "references": return DisplayReferences()
+            case "edit": return DisplayEditPage()
+            case "login": return DisplayLoginPage()
+            case "register": return DisplayRegisterPage()
+            case "404": return Display404Page()
+            default:
+                console.error(`Error: Callback does not Exist... ${router.ActiveLink}`)
+        }
     }
     
     function Start() {
         console.log("App Started Successfully!")
-        AjaxRequest("GET", "./static/header.html", LoadHeader)
-        
+        // AjaxRequest("GET", "./static/header.html", LoadHeader)
+        LoadHeader()
 
-        switch (document.title) {
+        LoadContent()
+
+        LoadFooter()
+
+/*         switch (document.title) {
             case "Home":
                 DisplayHome()
                 break
@@ -320,7 +382,7 @@
             case "Register":
                 DisplayRegistrationPage()
                 break
-        }
+        } */
     }
 
     window.addEventListener("load", Start)
