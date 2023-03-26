@@ -287,7 +287,7 @@
                         let emailAddress = document.forms[0].emailAddress.value
 
                         // Get form information (name, contact number, email address)
-                        AddContact(fullName, contactNumber, emailAddress)
+                        AddContact(fullName.value, contactNumber.value, emailAddress.value)
 
                         // redirect to contact-list
                         // location.href = '/contact-list'

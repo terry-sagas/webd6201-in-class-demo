@@ -186,7 +186,7 @@
                         let fullName = document.forms[0].fullName.value;
                         let contactNumber = document.forms[0].contactNumber.value;
                         let emailAddress = document.forms[0].emailAddress.value;
-                        AddContact(fullName, contactNumber, emailAddress);
+                        AddContact(fullName.value, contactNumber.value, emailAddress.value);
                         LoadLink('contact-list');
                     });
                 }
