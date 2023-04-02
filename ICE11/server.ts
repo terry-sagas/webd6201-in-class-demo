@@ -1,38 +1,48 @@
-import http from 'http'
-import fs from 'fs'
-import mime from 'mime-types'
+import app from './app'
+import debug from 'debug'
+debug('temp:server')
+import http from "http"
+import { HttpError } from 'http-errors'
+
+const normalizePort = (val: string) =>{
+    const port = parseInt(val, 10)
+
+    if(isNaN(port)) return val
+
+    if(port >= 0) return port
+
+    return false
+}
+
+const port = normalizePort(process.env.PORT || '3000') as number
+app.set('port', port)
 
 
-const hostname = '127.0.0.1';
-const port = process.env.PORT || 3000;
-let lookup = mime.lookup
+const onError = (error: HttpError) =>{
+    if (error.syscall !== 'listen') throw error
 
-const server = http.createServer((req, res) => {
-    let path = req.url as string
-
-    if (path == "/" || path == "/home"){
-        path = "/index.html"
+    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+    switch(error.code){
+        case 'EACCES':
+            console.error(bind + ' reqiures elevated privileges')
+            process.exit(1)
+            break
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use')
+            process.exit(1)
+            break
+        default:
+            throw error
     }
+}
 
-    let mimeType  = lookup(path.substring(1)) as string
+const onListening = () => {
+    let addr = server.address()
+    let bind = 'pipe ' + addr
+    debug('Listening on ' + bind)
+}
 
-    fs.readFile(__dirname + path, (err, data) =>{
-        if(err){
-            res.writeHead(404)
-            res.end("ERROR 404")
-            return
-        }
-        res.setHeader("X-Content-Type-Options", "nosniff")
-        res.writeHead(200, {
-            "Content-Type": mimeType
-        })
-        res.end(data)
-    });
-    
-
-});
-
-
-server.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+const server = http.createServer(app)
+server.listen(port)
+server.on('error', onError)
+server.on('listening', onListening)
