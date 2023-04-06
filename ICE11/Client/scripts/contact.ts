@@ -1,8 +1,10 @@
 namespace core {
     export class Contact {
+        //private instance members
         private m_name: string
         private m_contactNumber: string
         private m_emailAddress: string
+
         // Constructor
         constructor(name: string, contactNumber: string, emailAddress: string) {
             this.m_name = name
@@ -14,7 +16,7 @@ namespace core {
         public get Name(): string {
             return this.m_name
         }
-        public set Name(name: string){
+        public set Name(name: string) {
             this.m_name = name
         }
     
@@ -51,7 +53,7 @@ namespace core {
         }
     
         // Public Override Method
-        toString() {
+        toString(): string {
             return `Full Name is ${ this.Name }\nContact Information is ${ this.ContactNumber }\nEmail Address is ${ this.EmailAddress }`
         }
     }

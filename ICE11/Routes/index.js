@@ -27,7 +27,7 @@ router.get('/contact-list', (req, res, next) => {
     res.render('index', { title: 'Contact-List', page: 'contact-list', displayName: '' });
 });
 router.get('/edit', (req, res, next) => {
-    res.render('index', { title: 'Edit Contact', page: 'hoeditme', displayName: '' });
+    res.render('index', { title: 'Edit Contact', page: 'edit', displayName: '' });
 });
 exports.default = router;
 //# sourceMappingURL=index.js.map
